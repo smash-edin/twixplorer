@@ -1,6 +1,6 @@
 # TwiXplorer: An Interactive Tool for Narrative Detection and Analysis in Historic Twitter Data
 
-Welcome to TwiXplorer, an interactive tool to explore and understand static Twitter (X) datasets! Our system is more advanced and easy to use than existing options and demonstrates how AI can help and be integrated into a process to make sense of large datasets. The tool is accessed through a web-based dashboard and designed with interaction in mind: the analyst can iteratively explore the data instead of being presented with static reports. We make the tool fully open source.
+Welcome to TwiXplorer, an interactive tool to explore and understand static Twitter (X) datasets! Our system is advanced and easy to use and demonstrates how AI can help and be integrated into a process to make sense of large datasets. The tool is accessed through a web-based dashboard and designed with interaction in mind: the analyst can iteratively explore the data instead of being presented with static reports.
 
 If you decide to use our tool, please cite our paper: 
 
