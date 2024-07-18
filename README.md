@@ -6,6 +6,10 @@ If you decide to use our tool, please cite our paper:
 
 [TODO: ADD PAPER CITATION]
 
+## Features
+
+[TODO: add screnshots for each feature]
+
 ## Getting started
 
 To set up the project after cloning the repository:
