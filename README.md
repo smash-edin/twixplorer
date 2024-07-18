@@ -29,11 +29,4 @@ To set up the project after cloning the repository, follow the following two ste
 This will allow you to pre-process your Twitter (X) dataset and load it into a Solr core for future use in the dashboard. 
 2. **Launch dashboard**: Go into the "preprocessing" sub-folder and follow the instructions in this second README file.
 
-The **twixplorer-ui** folder itself contains the following two sub-folders:
-
-* **api**: Contains the code of the Flask back-end. 
-* **src**: contains the code of the React front-end.
-
-The **docs** sub-folder inside **api** contains the HTML documentation for this API. You can download the docs folder and then open the file _build/html/index.html in your browser to navigate the documentation.
-
 
