@@ -1,13 +1,13 @@
-# TwiXplorer Discovery Dashboard
+# TwiXplorer Dashboard
 
-This folder contains the code for the React front-end (under src sub-folder) and Flask back-end (under api sub-folder) for the TwiXplorer dashboard.  
+This repository is composed of the following sub-folders: 
 
-The **docs** sub-folder inside **api** contains the HTML documentation for this API. You can download the docs folder and then open the file _build/html/index.html in your browser to navigate the documentation.
+* **api**: Contains the code of the Flask back-end of the TwiXplorer dashboard. 
+* **src**: contains the code of the React front-end of the TwiXplorer dashboard.
 
-The present code assumes you already have a Solr core set up which indexes your pre-processed data. The code to run this 
-pre-processing and create the Solr core are contained in the "preprocessing" sub-folder at the root of this repository. 
-Assuming that this data is Twitter (X) data, here are the fields that are expected to be indexed in Solr by the current 
-project: 
+The present code assumes you already have a Solr core set up which indexes your pre-processed data (from following the 
+instructions inside the twixplorer/preprocessing folder). Assuming that this data is Twitter data, here are the fields 
+that are expected to be indexed in Solr by the current project: 
 
 |   **Field name**  |   **Type**  |                               **Description**                              |
 |:-----------------:|:-----------:|:--------------------------------------------------------------------------:|
@@ -30,22 +30,28 @@ analysis classifier, and *embedding_5d* and *embedding_2d* by running first the 
 embedding represention and then running the UMAP algorithm to reduce the dimensions of these embeddings to 5 and then 2 
 dimensions.
 
+## Launching TwiXplorer dashboard
+
 Once the Solr cores are set up with the correct fields indexed, you can follow the following steps to run the dashboard 
 on your local machine.
 
-## Setting up project on local machine for development
-
 To set up the project after cloning the repository:
 
-1) Modify the *SOLR_URL*, *SOLR_PORT* and *SOLR_CORES* fields in fantom-ui/api/configs.py file to point to your own Solr set up.
+1) Modify the *SOLR_URL*, *SOLR_PORT*, *SOLR_CORES*, *SA_ULR* and *LOCATION_URL* fields in dashboard/api/configs.py 
+file to point to your own Solr set up.
 
-2) Install Javascript dependencies:
+2) Go to dashboard/src/.data/datasetOptions.csv and add the list of Solr core names you want to be able to select 
+inside the dashboard.
+
+3) Install Javascript dependencies:
 ```
 cd dashboard
 yarn install
 ```
 
-3) Create Python virtual environment and install dependencies:
+Note that if yarn is not install on your machine you will have to install it beforehand: https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable
+
+4) Create Python virtual environment and install dependencies:
 ```
 cd api
 python3 -m venv venv
@@ -53,17 +59,22 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-4) Launch React app:
+5) Launch React app:
 ```
-cd ..       # you should be at the root of the dashboard folder once again
+cd ..       # you should be at the root of the dashboard folder
 yarn start
 ```
 
-5) Launch Flask back-end in a new terminal:
+6) Launch Flask back-end in a new terminal:
 ```
 cd dashboard
 yarn start-api
 ```
 
-6) Access the app from http://localhost:3000/ in your browser
+7) Access the app from http://localhost:3000/ in your browser
+
+**Optional**: You can decide to run the Flask API and React front-end on separate machines. If so, you need to go to the 
+following files and make the appropriate modifications where flagged: 
+- dashboard/config/allowedOrigins.js
+- dashboard/src/api/axios.js
 
