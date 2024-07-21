@@ -1,4 +1,10 @@
 from analyser_core_huggenface import *
+import shutil
+import os
+
+
+if os.path.exists('cardiffnlp'):
+    shutil.rmtree('cardiffnlp', )
 
 app = flask.Flask(__name__, template_folder='templates')
 

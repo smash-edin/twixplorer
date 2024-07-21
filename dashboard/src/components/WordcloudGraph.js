@@ -184,7 +184,7 @@ export const WordcloudGraph = ({data, keywords, topics, inputInfo, communities})
         setSelectedSentiment(sentimentTemp)
         setDropSentiments(dropSentimentsTemp)
 
-        let title = mapValuesToNames[selectedSourceFieldTemp] + " wordcloud"
+        let title = mapValuesToNames[selectedSourceFieldTemp] + " Wordcloud"
         let key1 = "text"
         let key2 = "value"
         let sentiments = true
@@ -245,7 +245,7 @@ export const WordcloudGraph = ({data, keywords, topics, inputInfo, communities})
     // useEffect hook to update wordcloud data to display upon a change in the selected filters or the data passed by the
     // parent component (i.e. TestPage)
     useEffect(() => {
-        let title = mapValuesToNames[selectedSourceField] + " wordcloud"
+        let title = mapValuesToNames[selectedSourceField] + " Wordcloud"
         let key1 = "text"
         let key2 = "value"
         let sentiments = true

@@ -1,7 +1,34 @@
+import os
 import requests
 import sys
 sys.path.append('..')
 from data_updater.configs import ApplicationConfig
+configs_path = '../data_updater/configs.py'
+import ast
+import astor
+
+class ConfigModifier(ast.NodeTransformer):
+    def __init__(self, cores):
+        self.cores = cores
+
+    def visit_ClassDef(self, node):
+        if node.name == "ApplicationConfig":
+            for stmt in node.body:
+                if isinstance(stmt, ast.Assign):
+                    if any(target.id == 'SOLR_CORES' for target in stmt.targets):
+                        stmt.value = ast.List(elts=[ast.Str(s=core) for core in self.cores], ctx=ast.Load())
+        return node
+
+def save_config_to_file(file_path, cores):
+   with open(file_path, 'r') as file:
+       tree = ast.parse(file.read())
+
+   modifier = ConfigModifier(cores)
+   modified_tree = modifier.visit(tree)
+
+   with open(file_path, 'w') as file:
+       file.write(astor.to_source(modified_tree))
+
 
 def init_schema(url):
     scehma_contents = [
@@ -76,26 +103,29 @@ def init_schema(url):
 
 
 def add_core(core_name,path,url,port):
-    import os
     r1 = os.system(f"{path}/bin/solr create -c {core_name}  -p {port}")
     url = f"{url}:{port}/solr/{core_name}/schema"
     r2 = init_schema(url)
+    if r1 == 0 and r2.status_code == 200:
+        if core not in ApplicationConfig.SOLR_CORES:
+            ApplicationConfig.SOLR_CORES.append(core)
     return (r1 == 0 and r2.status_code == 200)
 
 def delete_core(core_name,path, port):
-    import os
     r = os.system(f"{path}/bin/solr delete -c {core_name} -p {port}")
+    if r == 0:
+        if core in ApplicationConfig.SOLR_CORES:
+            ApplicationConfig.SOLR_CORES.remove(core)
     return(r == 0)
 
 def start_solr(path, port):
-    import os
     r1 = os.system(f"{path}/bin/solr start -p {port}")
 
 if __name__== "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--core', help="The Solr collection name", default=None)
-    parser.add_argument('-d', '--command', help="please specify the command to be performed (add or delete core, or start solr).", default=None)
+    parser.add_argument('-d', '--command', help="The command to be performed (add or delete core, or start solr).", default=None)
 
     args = parser.parse_args()
     cmd = args.command
@@ -113,7 +143,9 @@ if __name__== "__main__":
     else:
         if cmd == "add" or cmd == "create":
             if add_core(core, ApplicationConfig.SOLR_PATH, ApplicationConfig.SOLR_URL, ApplicationConfig.SOLR_PORT):
+                save_config_to_file(configs_path, ApplicationConfig.SOLR_CORES)
                 print("The collection has been created successfully, please update the configs.py file accordingly.")
         elif cmd == "delete":
             if delete_core(core, ApplicationConfig.SOLR_PATH,ApplicationConfig.SOLR_PORT):
+                save_config_to_file(configs_path, ApplicationConfig.SOLR_CORES)
                 print("The collection has been deleted successfully, please update the configs.py file accordingly.")

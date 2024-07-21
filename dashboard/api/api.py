@@ -813,7 +813,7 @@ def topic_modelling():
 
         # Get the data that corresponds to the "All" keyword
         if len(keywords) > 1:
-            df_ALL = pd.concat([pd.DataFrame(responses[k]) for k in keywords if k != "All"]).drop_duplicates()
+            df_ALL = pd.concat([pd.DataFrame(responses[k]) for k in keywords if k != "All"]).drop_duplicates(["full_text"])
             df_ALL = preprocess_data(df_ALL)
         else:
             df_ALL = pd.DataFrame(responses[keywords[0]])

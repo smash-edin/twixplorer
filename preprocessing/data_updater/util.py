@@ -11,6 +11,8 @@ import os
 import datetime
 import logging
 import emoji
+import pandas as pd
+from os.path import isfile, join
 from configs import ApplicationConfig
 from logging.handlers import TimedRotatingFileHandler as _TimedRotatingFileHandler
 from nltk.tokenize import TweetTokenizer
@@ -359,8 +361,18 @@ def extractResponseContentsFromDict(items=None, objects_dict=dict()):
                 handleException(exp,item,__name__)
     return objects_dict
 
+def getEmojis(text):
+    try:
+        emojis = emoji.distinct_emoji_list(text.encode('utf-16', 'surrogatepass').decode('utf-16'))
+    except Exception as exp:
+        emojis = emoji.distinct_emoji_list(text)
+    finally:
+        return emojis
+    
 def getCleanedText(text):
-    return ' '.join([x for x in tokenizer.tokenize(re.sub("[•!?;,/’‘&%'\"\t\n\.....； ]+"," ", text)) if not x.startswith('@') and not x.startswith('#') and not x.startswith('http')])
+    #remove mentions, hashtags and urls
+    t = ' '.join([x for x in tokenizer.tokenize(text) if not x.startswith('@') and not x.startswith('#') and not x.startswith('http')])
+    return re.sub("[•!?;,/’‘&%'\"\t\n\.....； ]+"," ", t)
 
 def getCleanedTextList(text):
     try:
@@ -437,8 +449,8 @@ def getTweetContent(object_, original, users_dict, places_dict, media_dict):
     urls = get_urls_from_object(object_)
     full_text = object_['text'] if 'text' in object_.keys() else object_['full_text'] if 'full_text' in object_.keys() else ''
     tweet_ = {'id':object_['id'],
-              'created_at':time.strftime('%Y-%m-%dT%H:%M:%S', time.strptime(object_['created_at'],'%Y-%m-%dT%H:%M:%S.%fZ')),
-              'created_at_day':time.strftime('%Y-%m-%d', time.strptime(object_['created_at'],'%Y-%m-%dT%H:%M:%S.%fZ')),
+              'created_at':time.strftime('%Y-%m-%dT%H:%M:%SZ', time.strptime(object_['created_at'],'%Y-%m-%dT%H:%M:%S.%fZ')),
+              'created_at_days':time.strftime('%Y-%m-%d', time.strptime(object_['created_at'],'%Y-%m-%dT%H:%M:%S.%fZ')),
               'created_at_months':time.strftime('%Y-%m', time.strptime(object_['created_at'],'%Y-%m-%dT%H:%M:%S.%fZ')),
               'created_at_years':time.strftime('%Y', time.strptime(object_['created_at'],'%Y-%m-%dT%H:%M:%S.%fZ')),
               'emotion': getEmotion(full_text),
@@ -470,7 +482,7 @@ def getTweetContent(object_, original, users_dict, places_dict, media_dict):
               'users_followers_count': users_followers_count,
               'users_friends_count': users_friends_count,
               'matchingRule': object_['matching_rules'] if 'matching_rules' in object_.keys() else None,
-              'emojis': emoji.distinct_emoji_list(full_text),
+              'emojis': getEmojis(full_text),
               'text' : getCleanedText(full_text),
               'processed_tokens':  getCleanedTextList(full_text),
               'processed_desc_tokens': getCleanedTextList(users_description),

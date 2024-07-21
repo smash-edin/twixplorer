@@ -158,7 +158,11 @@ export const MapGraph = ({data, keywords, inputInfo}) => {
             name: selectedFilterValue,
             colorscale: selectedFilterValue in sentimentColorScale ? sentimentColorScale[selectedFilterValue] : sentimentColorScale['All'],
             color_continuous_scale: selectedFilterValue in sentimentColorScale ? sentimentColorScale[selectedFilterValue] : sentimentColorScale['All'],
-            colorbar: {y: 0, yanchor: "bottom", title: {text: "Count", side: "right"}},
+            colorbar: {
+                y: 0,
+                yanchor: "bottom",
+                title: {text: selectedFilterValue != "Positive_Negative" ? "Count" : "Ratio", side: "right"}
+            },
             autocolorscale: false,
             hoverinfo: 'text'
         }];

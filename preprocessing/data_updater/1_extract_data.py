@@ -35,21 +35,25 @@ if __name__== "__main__":
     if data_path == None:
         print("Please enter the folder of which the source data located in.")
         sys.exit(-1)
-    if OUTPUT_FOLDER == None:
-        OUTPUT_FOLDER = f"{data_path}_processed"
-        print(f"The processed tweets will be written to the folder {OUTPUT_FOLDER}")
-        if not os.path.exists(OUTPUT_FOLDER):
-            os.makedirs(OUTPUT_FOLDER)
 
     if data_path.endswith("/"):
         data_path = data_path[:-1]
+    if OUTPUT_FOLDER == None:
+        OUTPUT_FOLDER = f"{data_path}_processed"
+    print(f"The processed tweets will be written to the folder {OUTPUT_FOLDER}")
+    if not os.path.exists(OUTPUT_FOLDER):
+        os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+    
+    
     users_files = []
     day = datetime.datetime.now()
     limit = day.strftime('%Y_%m_%d')
     limit_day = day.strftime('%Y_%m_%d')
 
-    workfiles = list(set([f for f in listdir(data_path) if limit not in f and isfile(join(data_path, f)) and not f.endswith('.gz')]))
+    import glob
 
+
+    workfiles = list(set([f for f in glob.glob(f"{data_path}/**/*", recursive=True) if isfile(f) and not f.endswith('.gz') and not f.endswith('.bz2')]))
     print(f'work_files: {workfiles}')
 
     for workFile in sorted(workfiles):
@@ -63,25 +67,29 @@ if __name__== "__main__":
         places_dict = dict()
         lines = 0
         tweets = []
-        if os.path.exists(join(data_path, workFile)):
-            with open(join(data_path, workFile), 'r' , encoding='utf-8') as fin:
+        if os.path.exists(workFile):
+            with open(workFile, 'r' , encoding='utf-8') as fin:
                 for line in fin:
-                    objects = json.loads(line.strip())
-                    lines += 1
-                    tweets, users, includes, places, media, poll = extract_raw_responses(objects)
-                    places_dict = extractResponseContentsFromDict(places, places_dict)
-                    media_dict = extractMediaContentsFromDict(media, media_dict)
-                    users_dict = extractResponseContentsFromDict(users, users_dict)
-                    if type(includes) == list:
-                        for obj_ in includes:
-                            tweets_dict, retweets_dict, replies_dict, quotes_dict = extractTweetsFromDict(obj_, tweets_dict, False, users_dict, places_dict, retweets_dict, replies_dict, quotes_dict, media_dict)
-                    else:
-                        tweets_dict, retweets_dict, replies_dict, quotes_dict = extractTweetsFromDict(includes, tweets_dict, False, users_dict, places_dict, retweets_dict, replies_dict, quotes_dict, media_dict)
-                    if type(tweets) == list:
-                        for obj_ in tweets:
-                            tweets_dict, retweets_dict, replies_dict, quotes_dict = extractTweetsFromDict(obj_, tweets_dict, True, users_dict, places_dict, retweets_dict, replies_dict, quotes_dict, media_dict)
-                    else:
-                        tweets_dict, retweets_dict, replies_dict, quotes_dict = extractTweetsFromDict(tweets, tweets_dict, True, users_dict, places_dict, retweets_dict, replies_dict, quotes_dict, media_dict)
+                    try:
+                        objects = json.loads(line.strip())
+                    except Exception as exp:
+                        objects = None
+                    if objects != None:
+                        lines += 1
+                        tweets, users, includes, places, media, poll = extract_raw_responses(objects)
+                        places_dict = extractResponseContentsFromDict(places, places_dict)
+                        media_dict = extractMediaContentsFromDict(media, media_dict)
+                        users_dict = extractResponseContentsFromDict(users, users_dict)
+                        if type(includes) == list:
+                            for obj_ in includes:
+                                tweets_dict, retweets_dict, replies_dict, quotes_dict = extractTweetsFromDict(obj_, tweets_dict, False, users_dict, places_dict, retweets_dict, replies_dict, quotes_dict, media_dict)
+                        else:
+                            tweets_dict, retweets_dict, replies_dict, quotes_dict = extractTweetsFromDict(includes, tweets_dict, False, users_dict, places_dict, retweets_dict, replies_dict, quotes_dict, media_dict)
+                        if type(tweets) == list:
+                            for obj_ in tweets:
+                                tweets_dict, retweets_dict, replies_dict, quotes_dict = extractTweetsFromDict(obj_, tweets_dict, True, users_dict, places_dict, retweets_dict, replies_dict, quotes_dict, media_dict)
+                        else:
+                            tweets_dict, retweets_dict, replies_dict, quotes_dict = extractTweetsFromDict(tweets, tweets_dict, True, users_dict, places_dict, retweets_dict, replies_dict, quotes_dict, media_dict)
 
 
             combined_dict = tweets_dict.copy()
@@ -118,8 +126,8 @@ if __name__== "__main__":
                         else:
                             if retweets_dict[k][j]['user_screen_name'] not in combined_dict[k]['retweeters']:
                                 combined_dict[k]['retweeters'].append(retweets_dict[k][j]['user_screen_name'])
-                        if 'created_at_day' in retweets_dict[k][j].keys():
-                            retweet_times = f"{retweets_dict[k][j]['user_screen_name']} {retweets_dict[k][j]['created_at_day']}"
+                        if 'created_at_days' in retweets_dict[k][j].keys():
+                            retweet_times = f"{retweets_dict[k][j]['user_screen_name']} {retweets_dict[k][j]['created_at_days']}"
                         elif 'created_at' in retweets_dict[k][j].keys():
                             retweet_times = f"{retweets_dict[k][j]['user_screen_name']} {retweets_dict[k][j]['created_at'][0:10]}"
                         else:
@@ -144,8 +152,8 @@ if __name__== "__main__":
                         else:
                             if quotes_dict[k][j]['user_screen_name'] not in combined_dict[k]['quoters']:
                                 combined_dict[k]['quoters'].append(quotes_dict[k][j]['user_screen_name'])
-                        if 'created_at_day' in quotes_dict[k][j].keys():
-                            quote_times = f"{quotes_dict[k][j]['user_screen_name']} {quotes_dict[k][j]['created_at_day']}"
+                        if 'created_at_days' in quotes_dict[k][j].keys():
+                            quote_times = f"{quotes_dict[k][j]['user_screen_name']} {quotes_dict[k][j]['created_at_days']}"
                         elif 'created_at' in quotes_dict[k][j].keys():
                             quote_times = f"{quotes_dict[k][j]['user_screen_name']} {quotes_dict[k][j]['created_at'][0:10]}"
                         else:
@@ -159,8 +167,8 @@ if __name__== "__main__":
 
 
 
+            outputFile = workFile.split("/")[-1] if len(workFile.split("/")) > 1 else "outputFile"
 
-
-            with open(join(OUTPUT_FOLDER, workFile), 'a+', encoding='utf-8') as fout:
+            with open(join(OUTPUT_FOLDER, outputFile), 'a+', encoding='utf-8') as fout:
                 for k in combined_dict.keys():
                     fout.write(f"{json.dumps(combined_dict[k], ensure_ascii=False)}\n")

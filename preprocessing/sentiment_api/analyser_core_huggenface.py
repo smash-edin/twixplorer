@@ -15,9 +15,6 @@ import shutil
 #The currently supported languages by the used sentiment analysis model (cardiffnlp/twitter-xlm-roberta-base-sentiment)
 SUPPORTED_LANGUAGES = ['ar', 'en', 'fr', 'de', 'hi', 'it', 'sp', 'pt']
 
-if os.path.exists('cardiffnlp'):
-    shutil.rmtree('cardiffnlp', )
-
 MODEL = f"cardiffnlp/twitter-xlm-roberta-base-sentiment"
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
 config = AutoConfig.from_pretrained(MODEL)
@@ -99,7 +96,7 @@ def huggingface_sent(sentence, return_tensors='pt'):
     if (len(text)>0):
         try:
             text = preprocess(text, remove_http_mentions=True, keep_flag = False)
-            encoded_input = tokenizer(text, return_tensors=return_tensors)
+            encoded_input = tokenizer(text, truncation=True, max_length=512, return_tensors=return_tensors)
             output = model(**encoded_input)
             if return_tensors=='tf':
                 scores = output[0][0].numpy()

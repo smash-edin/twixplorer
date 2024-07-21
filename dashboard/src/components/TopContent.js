@@ -45,11 +45,13 @@ export const TopContent = ({data, keywords, inputInfo}) => {
       return (
         <p>
           {parts.map(part => {
-              return urlRegex.test(part) ? (
-                <a key={part} href={part} target="_blank">
+            if (part.length > 0) {
+                return urlRegex.test(part) ? (
+                  <a key={part} href={part} target="_blank">
                   {part}
-                </a>
-              ) : part
+                  </a>
+                ) : part
+              }
             }
           )}
         </p>

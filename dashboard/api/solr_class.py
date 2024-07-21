@@ -677,7 +677,7 @@ class SolrClass:
 		random_number = random.randint(0,9999)
 
 
-		facet_url = f'{str(self.solrs[solr_core])}select?random_{random_number}&sort=retweet_count%20desc,community%20desc&fl=id%2C%20user_screen_name%2C%20created_at_days%2C%20users_description%2C%20{str(interaction)}%2C%20sentiment&rows=100000&indent=true&q.op=OR&q={str(interaction)}:*'
+		facet_url = f'{str(self.solrs[solr_core])}select?random_{random_number}&sort=retweet_count%20desc&fl=id%2C%20user_screen_name%2C%20created_at_days%2C%20users_description%2C%20{str(interaction)}%2C%20sentiment&rows=100000&indent=true&q.op=OR&q={str(interaction)}:*'
 		print_this("---------")
 		print_this(f"<=-=> {facet_url}")
 		print_this("=========")
@@ -955,7 +955,7 @@ class SolrClass:
 			print('[write_location_to_solr]: Exception ', str(exp), ' occurred, try later')
 			return False
 
-	def add_items_to_solr(self, solr_core, items):
+	def add_items_to_solr(self, solr_core, items, reduced=1):
 		"""Add list of items to solr core. Update fields of the items if they already exist in Solr. This function is \
 		    used during the pre-processing of the data (i.e. when onboarding a new dataset).
 
@@ -963,20 +963,30 @@ class SolrClass:
 			solr_core (str): the name of the solr core to be used to add the items.
 			items (List): A list of dicts that holds the items to be added to Solr. It should have the same fields as the Solr core.
 		"""
+		threshold = 1000 if reduced < 2 else int(1000 / (reduced))
 		try:
-			url = self.solrs[solr_core]
-			solr = pysolr.Solr(url, timeout=120)
-			distinct_items = ["domains", "emoji", "emojis", "emotion_distribution", "features", "hashtags", "mentions", "retweeters", "retweet_times", "matchingRule", "media", "processed_desc_tokens", "processed_tokens", "quote_times", "quote_tweets", "quoters", "replies_times", "replies_tweets", "reply_network_nodes", "retweet_network_nodes", "sentiment_distribution", "topic", "urls"]
-			fieldUpdates = {k: 'set' if k not in distinct_items else 'add-distinct' for k in list(items[0].keys()) if k != 'id'}
+			if solr_core in self.solrs:
+				url = self.solrs[solr_core]
+				solr = pysolr.Solr(url, timeout=300)
+				distinct_items = ["domains", "emojis", "emotion_distribution", "features", "hashtags", "mentions", "retweeters", "retweet_times", "matchingRule", "media", "processed_desc_tokens", "processed_tokens", "quote_times", "quote_tweets", "quoters", "replies_times", "replies_tweets", "reply_network_nodes", "retweet_network_nodes", "sentiment_distribution", "topic", "urls"]
+				fieldUpdates = {k: 'set' if k not in distinct_items else 'add-distinct' for k in list(items[0].keys()) if k != 'id'}
 
-			while len(items) > 0:
-				res = solr.add(items[0:10000], fieldUpdates=fieldUpdates)
-				if '"status">0<' not in res:
-					print('[add_items_to_solr]: Something went wrong. Please check the Solr core and values.')
-				else:
-					print('[add_items_to_solr]: Adding items to Solr done.')
-				items = items[10000:]
-			return True
+				for item in items:
+					if '_version_' in item.keys():
+						item.pop('_version')
+				while len(items) > 0:
+					res = solr.add(items[0:threshold], fieldUpdates=fieldUpdates)
+					if '"status">0<' not in res:
+						print('[add_items_to_solr]: Something went wrong. Please check the Solr core and values.')
+						return items
+					else:
+						print(f'[add_items_to_solr]: Adding items to Solr done. {len(items[threshold:])} waiting to be added. ')
+						items = items[threshold:]
+						threshold = 1000
+				return items
+			else:
+				print('[add_items_to_solr]: Error (', str(solr_core), ') core is not registered in the system!')
 		except Exception as exp:
 			print('[add_items_to_solr]: Exception (', str(exp), ') occurred, try later')
-			return False
+			print(f"{len(items)} still needed to be added to solr.")
+			return items
