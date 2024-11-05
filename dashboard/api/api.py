@@ -718,18 +718,20 @@ def social_network_analysis():
                 try:
                     nodes_all = nodes_all.drop_duplicates(subset=['node'])
                     print("NB NODES BEFORE FILTERING OUT 0:", len(nodes_all))
-                    nodes_all = nodes_all[nodes_all["community"] != 0]
-                    print("NB NODES AFTER FILTERING OUT 0:", len(nodes_all))
+                    if len(nodes_all[nodes_all["community"] != 0]) > 100:
+                        nodes_all = nodes_all[nodes_all["community"] != 0]
+                        print("NB NODES AFTER FILTERING OUT 0:", len(nodes_all))
+                    else:
+                        print("No Nodes filtered out!")
                     network_stats_all[keyword] = resp['network_stats']['sentiments']
 
                     labels_all = nodes_all['community'].value_counts().index.to_list()
-                    print_this(f"nodes_all: {nodes_all}")
                     comm_to_rank = {l: idx for idx,l in enumerate(labels_all) if idx < max_label}
-
+                    
                     nb_labels = min(len(labels_all),max_label)
                     cmap = get_cmap('hsv_r')
                     labels = labels_all[0:nb_labels]
-
+                    
                     communities_traffic[keyword] = {str(k): resp['network_stats']['communities_traffic'][k] for k in labels if k in resp['network_stats']['communities_traffic']}
                     print_this(f"keyword : {keyword}")
                     category_color_mapping = {x: get_color(comm_to_rank[x], cmap, max_label) if x in comm_to_rank else get_color(-1, cmap, max_label) for x in labels_all}

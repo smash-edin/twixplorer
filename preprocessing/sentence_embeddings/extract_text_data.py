@@ -65,6 +65,7 @@ if __name__== "__main__":
         records, hits = solr.get_text_data(core)
 
         data_df = pd.DataFrame.from_records(records)
+        print(data_df.head())
         data_df['text'] = data_df.full_text.apply(lambda x: preprocess_text(x))
 
         # Write out the dataframe to csv file.

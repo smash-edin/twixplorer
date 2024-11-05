@@ -48,16 +48,44 @@ inside the dashboard.
 cd dashboard
 yarn install
 ```
+Note that this might not work if yarn is not installed, in which case follow the instructions from the following webpage: [https://classic.yarnpkg.com/lang/en/docs/install](https://classic.yarnpkg.com/lang/en/docs/install)
 
-Note that if yarn is not install on your machine you will have to install it beforehand: https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable
-
-4) Create Python virtual environment and install dependencies:
+4) Create Python virtual environment and install dependencies (<i><b>internet access required</b></i>):
 ```
 cd api
-python3 -m venv venv
+python3.8 -m venv venv
 source venv/bin/activate
+```
+
+In case the installation failed, the error message may suggest a solution such as installing the messing package. However, it may require root access to install the required package.
+
+If the error is related to the Python 3.8 version, you can try the following solution, assuming that the narratives-backend installation steps have already been performed in the system (<i><b>internet access required</b></i>):
+
+```
+cd api
+conda activate venv
+pip install virtualenv
+virtualenv -p $(which python3.8) venv
+conda deactivate
+source venv/bin/activate
+```
+
+After activating the virtual environment, we need to install the requirements by firing the following (<i><b>internet access required</b></i>):
+
+```
 pip install -r requirements.txt
 ```
+
+Please notice that this must be performed only once.
+
+After having the virtual environment install correctly, you can perform the following:
+
+```
+cd api
+source venv/bin/activate
+```
+and the system is ready to be used as shown in the following steps.
+
 
 5) Launch React app:
 ```

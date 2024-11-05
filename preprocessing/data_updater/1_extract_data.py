@@ -35,15 +35,18 @@ if __name__== "__main__":
     if data_path == None:
         print("Please enter the folder of which the source data located in.")
         sys.exit(-1)
-
+    
     if data_path.endswith("/"):
         data_path = data_path[:-1]
+    
     if OUTPUT_FOLDER == None:
-        OUTPUT_FOLDER = f"{data_path}_processed"
+            OUTPUT_FOLDER = f"{data_path}_processed"
     print(f"The processed tweets will be written to the folder {OUTPUT_FOLDER}")
     if not os.path.exists(OUTPUT_FOLDER):
         os.makedirs(OUTPUT_FOLDER, exist_ok=True)
-    
+
+
+
     
     users_files = []
     day = datetime.datetime.now()
@@ -51,7 +54,6 @@ if __name__== "__main__":
     limit_day = day.strftime('%Y_%m_%d')
 
     import glob
-
 
     workfiles = list(set([f for f in glob.glob(f"{data_path}/**/*", recursive=True) if isfile(f) and not f.endswith('.gz') and not f.endswith('.bz2')]))
     print(f'work_files: {workfiles}')
@@ -166,8 +168,8 @@ if __name__== "__main__":
                             combined_dict[k]['quote_times'].append(quote_times)
 
 
-
             outputFile = workFile.split("/")[-1] if len(workFile.split("/")) > 1 else "outputFile"
+
 
             with open(join(OUTPUT_FOLDER, outputFile), 'a+', encoding='utf-8') as fout:
                 for k in combined_dict.keys():

@@ -33,15 +33,25 @@ preprocessing folder. After that please follow the following steps carefully:
    ```
    SOLR_PORT=10196
    ```
-    3. Add the url of Solr host to the SOLR_IP_ALLOWLIST as follow:
+    3. This step is important to keep your system secure. However, it requires further knowledge in the network. You need to know the IP address of the allowed devices to access Solr. Add the urls of the host(s) of both Solr and the narratives-backed system  to the SOLR_IP_ALLOWLIST as follow:
    ```
-   SOLR_IP_ALLOWLIST=server.co.uk,127.0.0.1
+   SOLR_IP_ALLOWLIST=127.0.0.1
    ```
-    4. Set SOLR_JETTY_HOST setting. For security, you may consider running the Solr of the same server that runs other
-       modules and keep the SOLR_JETTY_HOST=127.0.0.1. If security is not concern, then you may consider making
-       SOLR_JETTY_HOST=0.0.0.0
+   In case you face any difficulty in accessing Solr, then comment the line to test Solr is up and accessible.
 
-    5. Save the **_solr.in.sh_** (or **_solr.in.cmd_**) file.
+
+
+    4. Set SOLR_JETTY_HOST setting. For security, you may consider running the Solr of the same server that runs other
+       modules and keep the SOLR_JETTY_HOST=127.0.0.1. If security is not concern, then you may consider making it SOLR_JETTY_HOST=0.0.0.0 or even commenting this value to be:
+       #SOLR_JETTY_HOST=127.0.0.1
+
+    5. Uncommend the autoCommit lines, 
+    ```
+    SOLR_OPTS="$SOLR_OPTS -Dsolr.autoSoftCommit.maxTime=3000"
+    SOLR_OPTS="$SOLR_OPTS -Dsolr.autoCommit.maxTime=60000" 
+    ```
+
+    6. Save the **_solr.in.sh_** (or **_solr.in.cmd_**) file.
 
 
 2. Update the **_configs.py_** file in the folder **_data_updater_** with the port number you specified in the
@@ -51,7 +61,7 @@ preprocessing folder. After that please follow the following steps carefully:
 
 3. To start Solr, from the solr folder in this repository, run the following command:
    ```
-   $ python solr_controller.py -d start
+   python solr_controller.py -d start
    ```
 
    If the error message "Port is already being used" printed, then check if another service uses the port number you

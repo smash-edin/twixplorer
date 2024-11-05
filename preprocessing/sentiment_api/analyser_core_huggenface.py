@@ -15,6 +15,8 @@ import shutil
 #The currently supported languages by the used sentiment analysis model (cardiffnlp/twitter-xlm-roberta-base-sentiment)
 SUPPORTED_LANGUAGES = ['ar', 'en', 'fr', 'de', 'hi', 'it', 'sp', 'pt']
 
+os.environ['TRANSFORMERS_CACHE'] = './cache'
+
 MODEL = f"cardiffnlp/twitter-xlm-roberta-base-sentiment"
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
 config = AutoConfig.from_pretrained(MODEL)

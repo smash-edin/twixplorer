@@ -662,7 +662,7 @@ class SolrClass:
 		return None, None
 	
 	#This function will be used by the backend processing...
-	def get_network_interaction(self, solr_core, interaction):
+	def get_network_interactions(self, solr_core, interaction):
 		"""A function that returns the network of users based on the interaction (retweet or reply) and the keyword.
 		It is used by backend processes to get the network of users for a given interaction and to perform community detection and graph representation.
 
@@ -771,24 +771,36 @@ class SolrClass:
 		response_dict = {'sentiments': dict(), 'communities_traffic': dict()}
 		
 		if stats_facet != None:
-			response_dict['sentiments'] = [{
-				'id': item['val'],
-				'Community' : item['val'],
-				'Nb active accounts' : item['nb_accounts'],
-				'Nb tweets per account': item['count'] / item['nb_accounts'],
-				'Nb retweets per tweet': item['retweeted'] / item['count'],
-				'Top 20 most retweeted accounts': [x['val'] for x in item['most_ret_accounts']['buckets']],
-				} for item in stats_facet if not item['val'] == 0]
-
+			if len(stats_facet) > 3: 
+				#if number of communities is more than 3, strip out community 0
+				response_dict['sentiments'] = [{
+					'id': item['val'],
+					'Community' : item['val'],
+					'Nb active accounts' : item['nb_accounts'],
+					'Nb tweets per account': item['count'] / item['nb_accounts'],
+					'Nb retweets per tweet': item['retweeted'] / item['count'],
+					'Top 20 most retweeted accounts': [x['val'] for x in item['most_ret_accounts']['buckets']],
+					} for item in stats_facet if not item['val'] == 0]
+			else: #consider all communities
+				response_dict['sentiments'] = [{
+					'id': item['val'],
+					'Community' : item['val'],
+					'Nb active accounts' : item['nb_accounts'],
+					'Nb tweets per account': item['count'] / item['nb_accounts'],
+					'Nb retweets per tweet': item['retweeted'] / item['count'],
+					'Top 20 most retweeted accounts': [x['val'] for x in item['most_ret_accounts']['buckets']],
+					} for item in stats_facet]
+		
+		limiting_communities = [-1, 0] if len(response_dict['sentiments']) > 3 else [-1]
 		if communities_traffic_facet != None:
 			response_dict['communities_traffic'] = {
 				item['val'] : sorted([{'Date': x['val'], 'Count': x['count']} for x in item['communities_traffic'].get('buckets', [])], key=lambda a: a['Date'], reverse=False)
-			for item in communities_traffic_facet if not item['val'] in [-1, 0]}
+			for item in communities_traffic_facet if not item['val'] in limiting_communities}
 		return response_dict
 
 	def get_date(self, solr, reverse = False):
 		""" A function to convert the timestamps of tweets as returned by the Twitter API into a date in the \
-		    YYYY-MM-DD format. It is used during the pre-processing of the data (i.e. when onboarding a new dataset).
+			YYYY-MM-DD format. It is used during the pre-processing of the data (i.e. when onboarding a new dataset).
 
 		Args:
 			:solr: (pysolr.Solr) the solr object used to search data from.
@@ -805,7 +817,7 @@ class SolrClass:
 
 	def get_no_sentiment_items(self, solr_core):
 		""" A function to retrieve tweets that do not have a sentiment label from Solr. It is used during the \
-		    pre-processing of the data (i.e. when onboarding a new dataset).
+			pre-processing of the data (i.e. when onboarding a new dataset).
 
 		Args:
 			:solr_core: (str) the name of the solr core used to search data from.
@@ -834,7 +846,7 @@ class SolrClass:
 
 	def get_no_location_items(self, solr_core):
 		""" A function to retrieve tweets that do not have a location label from Solr. It is used during the \
-		    pre-processing of the data (i.e. when onboarding a new dataset).
+			pre-processing of the data (i.e. when onboarding a new dataset).
 
 		Args:
 			:solr_core: (str) the name of the solr core used to search data from.
@@ -957,7 +969,7 @@ class SolrClass:
 
 	def add_items_to_solr(self, solr_core, items, reduced=1):
 		"""Add list of items to solr core. Update fields of the items if they already exist in Solr. This function is \
-		    used during the pre-processing of the data (i.e. when onboarding a new dataset).
+			used during the pre-processing of the data (i.e. when onboarding a new dataset).
 
 		Args:
 			solr_core (str): the name of the solr core to be used to add the items.
@@ -975,7 +987,7 @@ class SolrClass:
 					if '_version_' in item.keys():
 						item.pop('_version')
 				while len(items) > 0:
-					res = solr.add(items[0:threshold], fieldUpdates=fieldUpdates)
+					res = solr.add(items[0:threshold], softCommit=True, fieldUpdates=fieldUpdates)
 					if '"status">0<' not in res:
 						print('[add_items_to_solr]: Something went wrong. Please check the Solr core and values.')
 						return items

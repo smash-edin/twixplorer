@@ -3,6 +3,7 @@ import requests
 import sys
 sys.path.append('..')
 from data_updater.configs import ApplicationConfig
+
 configs_path = '../data_updater/configs.py'
 import ast
 import astor
@@ -121,6 +122,9 @@ def delete_core(core_name,path, port):
 def start_solr(path, port):
     r1 = os.system(f"{path}/bin/solr start -p {port}")
 
+def restart_solr(path, port):
+    r1 = os.system(f"{path}/bin/solr restart -p {port}")
+
 if __name__== "__main__":
     import argparse
     parser = argparse.ArgumentParser()
@@ -137,6 +141,8 @@ if __name__== "__main__":
 
     elif cmd == "start":
         start_solr(ApplicationConfig.SOLR_PATH, ApplicationConfig.SOLR_PORT)
+    elif cmd == "restart":
+        restart_solr(ApplicationConfig.SOLR_PATH, ApplicationConfig.SOLR_PORT)
     elif core == None:
         print("Please specify the collection name (core).")
         exit(-1)

@@ -11,7 +11,7 @@ from solr_class import *
 from util import get_sentiments, get_language
 
 SLEEP_TIME = 3
-SUPPORTED_LANGUAGES = {'arabic': 'ar', 'english': 'en', 'french': 'fr', 'german':'de', 'hindi':'hi', 'italian': 'it', 'spanish': 'sp', 'portuguese': 'pt'}
+SUPPORTED_LANGUAGES = {"OtherLanguages": "OtherLanguages", 'arabic': 'ar', 'english': 'en', 'french': 'fr', 'german':'de', 'hindi':'hi', 'italian': 'it', 'spanish': 'sp', 'portuguese': 'pt'}
 SUPPORTED_LANGUAGES_REVERSE = {v: k for k, v in SUPPORTED_LANGUAGES.items()}
 
 if __name__== "__main__":
@@ -58,7 +58,7 @@ if __name__== "__main__":
                 except Exception as exp:
                     print(f'[update_sentiments]: [Exception] at Loading data! {exp}')
                 threshold = min(4000, max_row)
-                if len(sentiments_list) >= threshold:
+                if len(tweets_list) + len(sentiments_list) >= threshold:
                     print(f'[update_sentiments]: Sentiment loaded with {threshold} tweets')
                     extracted_sentiments = None
                     try:
@@ -74,7 +74,7 @@ if __name__== "__main__":
                             tweets_list.append({'id': k, 'sentiment': extracted_sentiments[k], 'language':SUPPORTED_LANGUAGES_REVERSE[sentiments_list[k]['language']], 'sentiment_s':'Done'})
                         sentiments_list = dict()
                 threshold = min(8000, max_row)
-
+                
                 if len(tweets_list) >= threshold:
                     print(f"[update_sentiments]: sample tweets: {[s['id'] for s in tweets_list[-3:]]}")
                     tweets_list =  solr.add_items_to_solr(core, tweets_list)

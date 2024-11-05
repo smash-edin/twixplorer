@@ -49,7 +49,7 @@ export const TopContent = ({data, keywords, inputInfo}) => {
                 return urlRegex.test(part) ? (
                   <a key={part} href={part} target="_blank">
                   {part}
-                  </a>
+                </a>
                 ) : part
               }
             }
