@@ -1,4 +1,4 @@
-from analyser_core_huggenface import *
+from analyser_core_huggingface import *
 import shutil
 import os
     
