@@ -22,7 +22,7 @@ class ApplicationConfig:
     ACCESS_TOKEN_TIMER = 4
     SOLR_URL = 'http://127.0.0.1' # PLACEHOLDER, replace with IP address of Solr if necessary
     SOLR_PORT = 10196 # PLACEHOLDER, change port number if necessary
-    SOLR_PATH = '../../solr-9.3.0/'
+    SOLR_PATH = '../../../solr-9.3.0/'
     SOLR_CORES = ['new_core'] # PLACEHOLDER< replace with list of Solr core names
     SOLR_NETWORKS = {'reply': {'field': 'replies_times', 'time': True},
         'retweet': {'field': 'retweet_times', 'time': True}}
