@@ -58,6 +58,12 @@ Next, you need to install the libraries (<i><b>internet required</b></i>) (<i><b
 pip install -r requirements.txt
 ```
 
+For MacOS systems, please install the required libraries by the following command:
+```
+pip install -r requirements-macOS.txt
+```
+
+
 ### <a id="settingEnv">2. Generate the required keys</a>
 This is an important step to be performed before starting the backend processing and the front end backend and ui processes.
 By running the generate_codes command from the narrative-backend root folder as shown below (<i><b>required to be run one time only</b></i>):

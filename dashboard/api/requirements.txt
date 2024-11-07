@@ -29,7 +29,6 @@ google-auth-oauthlib==1.0.0
 google-pasta==0.2.0
 greenlet==3.0.3
 grpcio==1.65.1
-h5py==3.6.0
 huggingface-hub==0.24.0
 idna==3.7
 importlib-metadata==6.8.0
@@ -69,10 +68,8 @@ setuptools==70.1.1
 six==1.16.0
 SQLAlchemy==2.0.24
 sympy==1.13.1
-tbb==2021.13.0
 tensorboard==2.13.0
 tensorboard-data-server==0.7.2
-tensorflow==2.13.1
 tensorflow-estimator==2.13.0
 tensorflow-io-gcs-filesystem==0.34.0
 termcolor==2.4.0
@@ -83,7 +80,6 @@ torch==2.1.2
 tornado==6.4.1
 tqdm==4.66.4
 transformers==4.42.4
-triton==2.1.0
 typing_extensions==4.5.0
 tzdata==2024.1
 umap-learn==0.5.4
@@ -96,3 +92,4 @@ xyzservices==2024.6.0
 zipp==3.16.2
 PyJWT==2.8.0
 pysolr==3.9.0
+tensorflow

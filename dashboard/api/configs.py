@@ -20,16 +20,16 @@ class ApplicationConfig:
     SECRET_KEY = os.environ['SECRET_KEY']
     REFRESH_TOKEN_TIMER = 4
     ACCESS_TOKEN_TIMER = 4
-    SOLR_URL = 'http://127.0.0.1' # PLACEHOLDER, replace with IP address of Solr if necessary
-    SOLR_PORT = 10196 # PLACEHOLDER, change port number if necessary
+    SOLR_URL = 'http://127.0.0.1'
+    SOLR_PORT = 10196
     SOLR_PATH = '../../../solr-9.3.0/'
-    SOLR_CORES = ['new_core'] # PLACEHOLDER< replace with list of Solr core names
+    SOLR_CORES = ['new_core']
     SOLR_NETWORKS = {'reply': {'field': 'replies_times', 'time': True},
         'retweet': {'field': 'retweet_times', 'time': True}}
     SOLR_COMMUNITIES = {'reply': {'field': 'reply_community'}, 'retweet': {
         'field': 'retweet_community'}}
-    SA_URL = 'http://127.0.0.1:10055/api/predict' # PLACEHOLDER, replace with API endpoint for Sentiment Analysis if necessary
-    LOCATION_URL = 'http://127.0.0.1:10066/api/get_locations' # PLACEHOLDER, replace with API endpoint for Location Detection if necessary
+    SA_URL = 'http://127.0.0.1:10055/api/predict'
+    LOCATION_URL = 'http://127.0.0.1:10066/api/get_locations'
     LOG_FOLDER = '../.log/'
     LANGUAGE_DICT = {'Non_Text': 'Non_Text', 'af': 'afrikaans', 'sq':
         'albanian', 'am': 'amharic', 'ar': 'arabic', 'arz': 'arabic', 'an':

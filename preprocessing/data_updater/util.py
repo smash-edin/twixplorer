@@ -378,6 +378,7 @@ def getCleanedTextList(text):
     try:
         return getCleanedText(text).split(' ')
     except Exception as exp:
+        print(exp)
         return ""
 
 def handleException(exp, object_='Unknown', func_= 'Unknown'):
