@@ -68,7 +68,7 @@ python generate_codes.py
 
 ### <a id="managingSolr">3. Apache Solr.<a>
 
-For detailed information on how to download and start solr, please read [Solr ReadMe.md](/solr/README.md) file.
+For detailed information on how to download and start solr, please read [Solr ReadMe.md](/preprocessing/solr/README.md) file.
 You can start Solr instance from the downloaded Solr, but we suggest to start it from solr folder in this repo. Adding
 the core is mandatory to be from ths solr controller to have the core initiated with the required fields.
 
