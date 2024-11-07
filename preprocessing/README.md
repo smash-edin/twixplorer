@@ -82,12 +82,12 @@ If you have the raw X (Twitter) data stored in a set of files within a folder `.
 python 1_extract_data.py -s ../.sample_data/
 ```
 
-Make sure to run the command prompt from the folder: ```/narrative-backend/data_updater/``` 
+Make sure to run the command prompt from the folder: ```/twixplorer/preprocessing/data_updater/``` 
 
 The output of this step will be stored in the folder `../.sample_data_processed/` 
 
 #### <a id="addingProcessedDataToSolr">- Adding Processed Data to Solr:</a>
-Next, from the same folder (```/narrative-backend/data_updater/```), run the following Python code:
+Next, from the same folder (```/twixplorer/preprocessing/data_updater/```), run the following Python code:
 ```
 python 2_import_data_to_solr.py -c _new_core -s ../.sample_data_processed/
 ```
@@ -97,10 +97,10 @@ python 2_import_data_to_solr.py -c _new_core -s ../.sample_data_processed/
 We have two steps for this process:
 
 1- <a id="runLocationAPI">Run the location-api</a>
-    To run the api, simply execute the shell script `./1_location_run.sh` in the folder (`narratives_backend/location_api`). 
+    To run the api, simply execute the shell script `./1_location_run.sh` in the folder (`/twixplorer/preprocessing/location_api`). 
 
 2- <a id="runLocationProcessor">Process the locations</a>
-    After running the location api, process the locations by running the following command from the folder  ```/narrative-backend/data_updater/```
+    After running the location api, process the locations by running the following command from the folder  ```/twixplorer/preprocessing/data_updater/```
 
 ```
 python 3_update_locations.py -c new_core
@@ -113,10 +113,10 @@ Two steps:
 
 #### <a id="runSentimentAPI">1- Run the sentiment-api (<i><b>requires internet access</b></i>)</a>.
 
-To run the api, simply execute the shell script `./1_sentiment_run.sh` in the `narratives_backend/sentiment_api/` folder. It requires to download the Sentiment analysis model from Hugging Face. [Click here for more details about the utilized model](https://huggingface.co/cardiffnlp/twitter-xlm-roberta-base-sentiment). After running the service, you can disconnect the internet.
+To run the api, simply execute the shell script `./1_sentiment_run.sh` in the `/twixplorer/preprocessing/sentiment_api/` folder. It requires to download the Sentiment analysis model from Hugging Face. [Click here for more details about the utilized model](https://huggingface.co/cardiffnlp/twitter-xlm-roberta-base-sentiment). After running the service, you can disconnect the internet.
 
 #### <a id="runSentimentProcessor">2- Process the sentiments</a>
-After running the sentiment analysis api, process the sentiments by running the following command from the folder  ```/narrative-backend/data_updater/```
+After running the sentiment analysis api, process the sentiments by running the following command from the folder  ```/twixplorer/preprocessing/data_updater/```
 
 ```
 python 4_update_sentiments.py -c new_core
@@ -138,10 +138,10 @@ Topic modelling embeddings must be stored in Solr to run this feature in the ana
 
 These command must be done in the listed order. The output of one step might be an input for the consecutive ones.
 
-#### NOTE: After finishing these steps, two folders will be created in the folder "sentence_embeddings". Narratives-ui requires these two folders to load the models. In case you got failure due to not having these two folders in the desired location, please perform the following:
+#### NOTE: After finishing these steps, two folders will be created in the folder "sentence_embeddings". TwiXplorer's dashboard requires these two folders to load the models. In case you got failure due to not having these two folders in the desired location, please perform the following:
 
 - Make sure that the folders are generated successfully.
-- Make sure that the paths of these folders are correctly set in the file topic_modelling_utils.py from the narratives-ui repo.
+- Make sure that the paths of these folders are correctly set in the file topic_modelling_utils.py from the TwiXplorer's dashboard folder.
 
 
 ### <a id="processSNA"> 8. Social Network Analysis (SNA) Module</a>
@@ -156,7 +156,7 @@ Firstly, you need to extract the network information from Solr, to perform that,
 python 1_extract_network_from_solr.py -c new_core
 ```
 
-Next you need to use the output file, by default it is `/narratives-backend/network_interaction/data/df_data_new_core.csv`  in as an input for the Java program to build the SNA graph. 
+Next you need to use the output file, by default it is `/twixplorer/preprocessing/network_interaction/data/df_data_new_core.csv`  in as an input for the Java program to build the SNA graph. 
 
 **NOTE: you can skip this step**, we add this to show how to create the Java classes by using the following commands (you can skip this step as the Java classes are provided already):
 
@@ -174,7 +174,7 @@ java -cp .:./gephi-toolkit-0.10.0-all.jar Main 10 ./data/df_data_new_core.csv
 ```
 In this command, we limited the process timeout to 10 minutes, which depends on the network size. This is by setting the parameter 10 after the parameter (Main). 
 We usually set it to 60 minutes for a reasonable network graph. You can check that configuration from the shell script ./2_generate_graph.sh in the network_interaction folder.
-The output of this program will be written to the file, ```/narratives-backend/network_interaction//data/df_data_GRAPH.json```. 
+The output of this program will be written to the file, ```/twixplorer/preprocessing/network_interaction//data/df_data_GRAPH.json```. 
 
 To simplify this step, we added a shell script (2_generate_graph.sh), but you only need to run it once.
 
