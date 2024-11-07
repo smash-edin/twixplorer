@@ -33,7 +33,7 @@ preprocessing folder. After that please follow the following steps carefully:
    ```
    SOLR_PORT=10196
    ```
-    3. This step is important to keep your system secure. However, it requires further knowledge in the network. You need to know the IP address of the allowed devices to access Solr. Add the urls of the host(s) of both Solr and the narratives-backed system  to the SOLR_IP_ALLOWLIST as follow:
+    3. This step is important to keep your system secure. However, it requires further knowledge in the network. You need to know the IP address of the allowed devices to access Solr. Add the urls of the host(s) of both Solr and the TwiXplorer-backed system  to the SOLR_IP_ALLOWLIST as follow:
    ```
    SOLR_IP_ALLOWLIST=127.0.0.1
    ```
