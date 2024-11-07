@@ -66,9 +66,10 @@ preprocessing folder. After that please follow the following steps carefully:
 
    If the error message "Port is already being used" printed, then check if another service uses the port number you
    identified above, or if Solr is already running with this Port.
+   If you got an error message due to Java version, please check [Java's official website](https://www.java.com/), and the [Oracle's java JDK](https://www.oracle.com/uk/java/technologies/downloads/#jdk23).
 
 
-4. To create a new collection, aka core, run the following command:
+5. To create a new collection, aka core, run the following command:
 
    ```
    python solr_controller.py -d add -c new_core
@@ -84,7 +85,7 @@ preprocessing folder. After that please follow the following steps carefully:
    not work as expected.
 
 
-5. To delete the already exist core (**_CAUTION_**: this process is non-reversible and will remove the core
+6. To delete the already exist core (**_CAUTION_**: this process is non-reversible and will remove the core
    permanently):
    ```
    python solr_controller.py -d delete -c new_core
