@@ -16,6 +16,8 @@ export const WordcloudGraph = ({data, keywords, topics, inputInfo, communities})
         'topics': "",
     }
 
+    const itemsToRemove = ["NonText", "OtherLanguages"];
+
     // Callback that enables the creation of a new report in a new page when clicking on one of the keywords
     const callbacks = {
         onWordClick: word => {
@@ -113,7 +115,9 @@ export const WordcloudGraph = ({data, keywords, topics, inputInfo, communities})
     }
 
     const getSentimentLabels = (labels) => {
-        return labels.map((dictionaryKey) => {
+        return labels
+            .filter(dictionaryKey => !itemsToRemove.includes(dictionaryKey))
+            .map((dictionaryKey) => {
             return {
                 "key": dictionaryKey,
                 "value": dictionaryKey,
@@ -218,8 +222,8 @@ export const WordcloudGraph = ({data, keywords, topics, inputInfo, communities})
             }
         }
 
-        if (communities != null && communities[selectedKeywords] !== undefined && dropKeywords[1] !== undefined) {
-            let firstKeyword = dropKeywords[1].value
+        if (communities != null && communities[selectedKeywords] !== undefined && dropKeywords[0] !== undefined) {
+            let firstKeyword = dropKeywords[0].value
             if (communities[firstKeyword] != null) {
                 localDropValues = localDropValues.concat([{
                     key: "Community user descriptions",

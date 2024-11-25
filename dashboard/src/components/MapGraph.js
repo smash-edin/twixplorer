@@ -142,8 +142,18 @@ export const MapGraph = ({data, keywords, inputInfo}) => {
             z.splice(x.findIndex(obj => obj.toLowerCase() === 'not_available'), 1)
             x.splice(x.findIndex(obj => obj.toLowerCase() === 'not_available'), 1)
         }
+
         const zmin = Math.min(...y) < 0 ? -Math.max(Math.abs(...y)) : 0
         const zmax = Math.min(...y) < 0 ? Math.max(Math.abs(...y)) : Math.max(...y)
+
+        let cmin = zmin
+        let cmax = zmax
+
+        if (selectedFilterValue === "Positive_Negative") {
+            cmin = -1
+            cmax = 1
+        }
+
         const traces = [{
             x,
             y,
@@ -153,8 +163,8 @@ export const MapGraph = ({data, keywords, inputInfo}) => {
             showlegend: false,
             text: z.map((value, index) => `${x[index]}: ${value}`),
             z: y,
-            zmax: zmax,
-            zmin: zmin,
+            cmin: cmin,
+            cmax: cmax,
             name: selectedFilterValue,
             colorscale: selectedFilterValue in sentimentColorScale ? sentimentColorScale[selectedFilterValue] : sentimentColorScale['All'],
             color_continuous_scale: selectedFilterValue in sentimentColorScale ? sentimentColorScale[selectedFilterValue] : sentimentColorScale['All'],

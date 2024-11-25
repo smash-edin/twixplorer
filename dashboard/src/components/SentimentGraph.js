@@ -103,7 +103,7 @@ export const SentimentGraph = ({data, keywords, inputInfo}) => {
         let title = titleMapping[selectedSentimentMethodValue]
         let key1 = "val"
         let key1_1 = selectedSentimentMethodValue === 'Sentiment_per_Language'? "Language":"Date"
-        let key2 = showAsPercentage? "Percent" : "Count"
+        let key2 = "Count"
         let sentiments = selectedSentimentMethodValue !== 'languages_timelines'
 
         const sentimentNames = Object.keys(items)

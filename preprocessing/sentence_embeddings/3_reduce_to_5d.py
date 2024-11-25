@@ -2,9 +2,12 @@
 import random
 import argparse
 import pandas as pd
-from umap.parametric_umap import ParametricUMAP
+from umap.parametric_umap import ParametricUMAP, load_ParametricUMAP
 from extract_text_data import DATA_DIR, DATA_FILE
 import sys
+
+import gc
+from tqdm import tqdm
 
 def get_args():
     """ Defines hyper-parameters. """
@@ -67,10 +70,23 @@ if __name__ == '__main__':
     embedder.save(out_file_reducer)
 
     print("4. Running model on all data...")
-    reduced_embeddings = embedder.transform(embeddings_all)
+    reduced_embeddings_dfs_list = list()
+
+    for start in tqdm(range(0, len(df), 1000)):
+        end = start + 1000
+        batch_df = df.iloc[start:end]
+
+        if pd.api.types.is_string_dtype(batch_df[source_column].dtype):
+            batch_df[source_column] = batch_df[source_column].apply(convert_string_to_array)
+
+        batch_df['embedding_5d'] = embedder.transform(batch_df[source_column].to_list()).tolist()
+        batch_df.drop(columns=[source_column], inplace=True)
+
+        gc.collect()
+        reduced_embeddings_dfs_list.append(batch_df)
 
     print("5. Saving 5d embeddings...")
-    df['embedding_5d'] = reduced_embeddings.tolist()
-    df.to_pickle(out_file_data)
+    df_whole = pd.concat(reduced_embeddings_dfs_list)
+    df_whole.to_pickle(out_file_data)
 
     print("Done!")

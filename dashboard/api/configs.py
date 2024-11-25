@@ -1,6 +1,40 @@
 from dotenv import load_dotenv
 import os
 import secrets
+import secrets
+
+load_dotenv()
+
+dotenvPath = ".env"
+env_set = True
+env_settings = {'SECRET_KEY':'', 'ACCESS_TOKEN_SECRET':'', 'REFRESH_TOKEN_SECRET':'', 'FLASK_DEBUG':''}
+try:
+    if os.path.exists(dotenvPath):
+        try:
+            if 'SECRET_KEY' in os.environ:
+                env_settings['SECRET_KEY'] = os.environ['SECRET_KEY']
+            if 'ACCESS_TOKEN_SECRET' in os.environ:
+                env_settings['ACCESS_TOKEN_SECRET'] = os.environ['ACCESS_TOKEN_SECRET']
+            if 'REFRESH_TOKEN_SECRET' in os.environ:
+                env_settings['REFRESH_TOKEN_SECRET'] = os.environ['REFRESH_TOKEN_SECRET']
+            if 'FLASK_DEBUG' in os.environ:
+                env_settings['FLASK_DEBUG'] = os.environ['FLASK_DEBUG']
+            for k in env_settings.keys():
+                env_set &= env_settings[k] != ''
+        except Exception as exp:
+            print(f"ERROR: {exp}")
+    else:
+        env_set = False
+except Exception as exp:
+    print(f"Error : {exp}")
+if not env_set:
+    for k in env_settings.keys():
+        if env_settings[k] == '':
+            env_settings[k] = secrets.token_hex(64) if k != 'FLASK_DEBUG' else 1
+    with open(dotenvPath, 'w', encoding='utf-8')as fout:
+        for k in env_settings.keys():
+            fout.write(f"{k}={env_settings[k]}\n")
+
 load_dotenv()
 
 

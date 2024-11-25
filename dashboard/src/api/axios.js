@@ -21,9 +21,7 @@ axios.defaults.baseURL = 'http://127.0.0.1:5000'
 // 5000 in place of this URL (e.g. http://myserver:5000)
 
 export default axios.create({
-    baseURL: '<PLACEHOLDER, add IP address of machine running Flask back-end with port number 5000>',
-    // NOTE: If Flask backend runs on a different machine from React front-end, add URL to Flask back-end with port number
-    // 5000 in place of this URL (e.g. http://myserver:5000)
+    baseURL: 'http://127.0.0.1:5000', //Placeholder, add IP address of machine running Flask back-end with port number 5000
     withCredentials: true,
     crossOrigin: true,
 });

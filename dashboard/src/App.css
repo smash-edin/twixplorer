@@ -66,6 +66,14 @@
   justify-content: space-between;
 }
 
+.SourceGroupDataset {
+  display: flex;
+  flex-direction: row;
+  margin-top: 30px;
+  width: 400px;
+  justify-content: space-between;
+}
+
 .DatePickerGroup {
   width:100%;
   display: flex;

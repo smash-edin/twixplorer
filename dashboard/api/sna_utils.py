@@ -38,9 +38,19 @@ def get_network_plot(df, bokeh_cmap):
              }
          """)
 
+    callbackClick = CustomJS(args={'source': datasource}, code="""
+        const selected = source.selected.indices;
+        if (selected.length) {
+            const index = selected[0];
+            const id = source.data.id[index];
+            const full_url = "https://twitter.com/twitter/status/@id".replace('@id', id);
+            window.open(full_url);
+        }
+    """)
+
     url = "https://twitter.com/@node"
     taptool = plot_figure.select(type=TapTool)
-    taptool.callback = OpenURL(url=url)
+    taptool.callback = callbackClick #OpenURL(url=url)
 
     plot_figure.add_tools(HoverTool(tooltips="""
     <div @y{custom}>

@@ -11,7 +11,7 @@ from matplotlib.pyplot import get_cmap
 from matplotlib.colors import rgb2hex
 
 from bokeh.plotting import figure, show
-from bokeh.models import HoverTool, ColumnDataSource, CategoricalColorMapper, ColorBar, CustomJSHover, OpenURL, TapTool
+from bokeh.models import HoverTool, ColumnDataSource, CategoricalColorMapper, ColorBar, CustomJSHover, OpenURL, TapTool, CustomJS
 from bokeh.embed import json_item
 
 from solr_class import *
@@ -23,8 +23,8 @@ MAX_VOL = 100000
 print_this("Loading models...")
 
 CLASSIFIER = SentenceTransformer('all-mpnet-base-v2')
-EMBEDDER_5D = load_ParametricUMAP('../../preprocessing/sentence-embeddings/5d_embedder')
-EMBEDDER_2D = load_ParametricUMAP('../../preprocessing/sentence-embeddings/2d_embedder')
+EMBEDDER_5D = load_ParametricUMAP('../../preprocessing/sentence_embeddings/5d_embedder')
+EMBEDDER_2D = load_ParametricUMAP('../../preprocessing/sentence_embeddings/2d_embedder')
 
 print_this("Models loaded successfully!")
 
@@ -80,9 +80,20 @@ def get_plot(df, bokeh_cmap=None):
          }
      """)
 
+    callbackClick = CustomJS(args={'source': datasource}, code="""
+        const selected = source.selected.indices;
+        if (selected.length) {
+            const index = selected[0];
+            const id = source.data.id[index];
+            const full_url = "https://twitter.com/twitter/status/@id".replace('@id', id);
+            window.open(full_url);
+        }
+    """)
+
     url = "https://twitter.com/twitter/status/@id"
+
     taptool = plot_figure.select(type=TapTool)
-    taptool.callback = OpenURL(url=url)
+    taptool.callback = callbackClick #OpenURL(url=url)
 
     if bokeh_cmap is None:
         plot_figure.add_tools(HoverTool(tooltips="""

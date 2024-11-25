@@ -286,7 +286,7 @@ export const InputHeader = ({inputInfo, setData, setInput, setNbHits, setKeyword
       </div>
 
       <div className = "InputFields">
-        <div className='SourceGroup'>
+        <div className='SourceGroupDataset'>
           <div className="SubTitleWithPopup">
             <h2 style={{marginRight: "5px"}}>Dataset </h2>
             <Popup
@@ -306,7 +306,7 @@ export const InputHeader = ({inputInfo, setData, setInput, setNbHits, setKeyword
               icon={null}
               value={dataSource}
               onChange={(e, { value }) => setDataSource(value)}
-              style={{width: '150px'}}
+              style={{width: '250px'}}
               name='source'
               id='source'
             ></Dropdown>
