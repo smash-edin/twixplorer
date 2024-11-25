@@ -7,11 +7,21 @@ iteratively explore the data instead of being presented with static reports.
 
 If you decide to use our tool, please cite our paper: 
 
-[TODO: ADD PAPER CITATION]
+Al Hariri, Youssef, Sandrine Chausson, Björn Ross, and Walid Magdy. "TwiXplorer: An Interactive Tool for Narrative Detection and Analysis in Historic Twitter Data." In Companion Publication of the 2024 Conference on Computer-Supported Cooperative Work and Social Computing, pp. 83-86. 2024.
 
 ## Features
 
-[TODO: add screenshots for each feature]
+1) Input header
+
+![Demo_CSCW](https://github.com/user-attachments/assets/2b7d7c3e-7ed7-4c19-8472-efdc65c19301)
+
+
+2) Timeline
+
+3) Sentiment
+
+
+You can also watch a video demo of our tool here: https://dl.acm.org/doi/abs/10.1145/3678884.3681815 
 
 
 ## Repository structure
